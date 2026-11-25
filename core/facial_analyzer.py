@@ -16,15 +16,21 @@ class FacialAnalyzer:
         self.face_cascade = cv2.CascadeClassifier(cascade_path)
         self.eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
 
-        # Check facenet-pytorch availability
+        # Lazy-loaded deep face model to ensure instantaneous startup
         self.facenet_model = None
-        try:
-            from facenet_pytorch import InceptionResnetV1
-            import torch
-            self.torch = torch
-            self.facenet_model = InceptionResnetV1(pretrained='vggface2').eval()
-        except Exception:
-            self.facenet_model = None
+        self._model_loading_attempted = False
+
+    def _ensure_model(self):
+        if not self._model_loading_attempted:
+            self._model_loading_attempted = True
+            try:
+                from facenet_pytorch import InceptionResnetV1
+                import torch
+                self.torch = torch
+                # Load with local cache timeout
+                self.facenet_model = InceptionResnetV1(pretrained='vggface2').eval()
+            except Exception:
+                self.facenet_model = None
 
     def detect_faces(self, image_path: str) -> Dict[str, Any]:
         """Detect faces and extract geometry, landmarks, and resolution metrics."""
@@ -81,6 +87,7 @@ class FacialAnalyzer:
 
     def _compute_embedding(self, face_bgr: np.ndarray) -> List[float]:
         """Generate normalized 128-d or 512-d feature vector."""
+        self._ensure_model()
         if self.facenet_model is not None:
             try:
                 # Preprocess for InceptionResnetV1 (160x160 RGB)
