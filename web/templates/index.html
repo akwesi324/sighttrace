@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GeoVision AI — Visual Forensics & Identity Mapping</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <!-- Leaflet CSS for maps -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="logo-cluster">
+      <i class="fa-solid fa-crosshairs logo-icon"></i>
+      <div>
+        <h1>GEOVISION <span class="accent-text">AI</span></h1>
+        <p class="subtitle">VISUAL FORENSICS & IDENTITY GEOLOCATION ENGINE</p>
+      </div>
+    </div>
+    <div class="status-badge">
+      <span class="status-dot"></span> 10M GPS RESOLVER ACTIVE
+    </div>
+  </header>
+
+  <main class="dashboard-container">
+    <!-- Left Column: Upload & Parameters -->
+    <section class="control-panel">
+      <div class="card upload-card">
+        <h2><i class="fa-solid fa-cloud-arrow-up"></i> MEDIA INGESTION</h2>
+        <p class="card-desc">Accepts all image/selfie & video extensions (.jpg, .png, .heic, .mp4, .mov, .mkv)</p>
+        
+        <div id="drop-zone" class="drop-zone">
+          <i class="fa-solid fa-satellite-dish drop-icon"></i>
+          <p>Drag & drop evidence media here</p>
+          <span>or click to browse filesystem</span>
+          <input type="file" id="file-input" accept="image/*,video/*" hidden>
+        </div>
+
+        <div id="file-preview-bar" class="file-preview-bar hidden">
+          <span id="preview-filename">evidence_file.jpg</span>
+          <button id="analyze-btn" class="btn primary-btn"><i class="fa-solid fa-bolt"></i> RUN DEEP SCAN</button>
+        </div>
+      </div>
+
+      <!-- Reference Gallery Verification -->
+      <div class="card reference-card">
+        <h2><i class="fa-solid fa-id-card-clip"></i> KNOWN IDENTITY VERIFICATION</h2>
+        <p class="card-desc">Optional consented reference selfie to match against target</p>
+        <div class="ref-input-group">
+          <input type="file" id="ref-file-input" accept="image/*" class="custom-file-input">
+        </div>
+      </div>
+
+      <!-- Compliance Notice -->
+      <div class="card notice-card">
+        <h3><i class="fa-solid fa-shield-halved"></i> PRIVACY COMPLIANCE</h3>
+        <p>Telemetry parsing operates in zero-leakage local enclave mode. Biometric data is evaluated in-memory under strict opt-in consent standards.</p>
+      </div>
+    </section>
+
+    <!-- Right Column: Results & Mapping Telemetry -->
+    <section class="results-panel">
+      <!-- Loading State -->
+      <div id="loader" class="loader-overlay hidden">
+        <div class="spinner"></div>
+        <p>DECODING METADATA, BIOMETRICS & GEOGRAPHIC RADIUS...</p>
+      </div>
+
+      <!-- Default Placeholder -->
+      <div id="empty-state" class="empty-state">
+        <i class="fa-solid fa-radar empty-icon"></i>
+        <h3>AWAITING EVIDENCE INGESTION</h3>
+        <p>Upload a selfie, photo, or video clip to trace GPS coordinates, hardware signatures, and facial geometry.</p>
+      </div>
+
+      <!-- Active Report View -->
+      <div id="report-view" class="report-view hidden">
+        <!-- Top Telemetry Row -->
+        <div class="telemetry-grid">
+          <div class="tele-card">
+            <span class="tele-label">TARGET GEOLOCATION</span>
+            <h3 id="res-geo-status" class="tele-val text-green">RESOLVED (±8.5m)</h3>
+            <p id="res-address" class="tele-sub">Retrieving physical address...</p>
+          </div>
+          <div class="tele-card">
+            <span class="tele-label">FACES DETECTED</span>
+            <h3 id="res-faces-count" class="tele-val text-cyan">1 Subject</h3>
+            <p id="res-face-sharpness" class="tele-sub">Sharpness Index: 84.2</p>
+          </div>
+          <div class="tele-card">
+            <span class="tele-label">ORIGIN HARDWARE</span>
+            <h3 id="res-device" class="tele-val">Apple iPhone 15 Pro</h3>
+            <p id="res-timestamp" class="tele-sub">2026-08-14 18:22:10 UTC</p>
+          </div>
+        </div>
+
+        <!-- Interactive Map Container -->
+        <div class="card map-card">
+          <div class="map-header">
+            <h3><i class="fa-solid fa-map-location-dot"></i> HIGH-PRECISION 10M RADAR PERIMETER</h3>
+            <span id="coords-display" class="coords-pill">0.000000° N, 0.000000° E</span>
+          </div>
+          <div id="map-container" class="map-viewport"></div>
+        </div>
+
+        <!-- Detailed Forensics Dual-Grid -->
+        <div class="details-grid">
+          <!-- Biometric Face Vector Details -->
+          <div class="card">
+            <h3><i class="fa-solid fa-fingerprint"></i> BIOMETRIC FACIAL SIGNATURE</h3>
+            <div id="face-details-list" class="details-list">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+
+          <!-- Scene & Environmental Forensics -->
+          <div class="card">
+            <h3><i class="fa-solid fa-circle-nodes"></i> MINUTE SCENE FORENSICS</h3>
+            <div id="scene-details-list" class="details-list">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
