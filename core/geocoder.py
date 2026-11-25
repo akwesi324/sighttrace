@@ -13,7 +13,7 @@ class Geocoder:
     def __init__(self, cache_dir: str = "cache/maps"):
         self.cache_dir = cache_dir
         os.makedirs(self.cache_dir, exist_ok=True)
-        self.headers = {"User-Agent": "GeoVision-AI-Forensics/1.0"}
+        self.headers = {"User-Agent": "SightTrace-Forensics/1.0"}
 
     def reverse_geocode(self, lat: float, lon: float) -> Dict[str, Any]:
         """Query OpenStreetMap Nominatim for street address."""

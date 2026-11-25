@@ -7,15 +7,15 @@ import urllib.parse
 from email.parser import BytesParser
 from email.policy import default
 
-from core import GeoVisionPipeline
+from core import SightTracePipeline
 
-pipeline = GeoVisionPipeline()
+pipeline = SightTracePipeline()
 UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "cache", "uploads")
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "web", "static")
 TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), "web", "templates")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-class GeoVisionServer(BaseHTTPRequestHandler):
+class SightTraceServer(BaseHTTPRequestHandler):
 
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
@@ -102,8 +102,8 @@ class GeoVisionServer(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
 def start_server(port: int = 8085):
-    server = HTTPServer(('0.0.0.0', port), GeoVisionServer)
-    print(f"[*] GeoVision AI Forensic Server active on http://localhost:{port}")
+    server = HTTPServer(('0.0.0.0', port), SightTraceServer)
+    print(f"[*] SightTrace Forensic Server active on http://localhost:{port}")
     try:
         server.serve_forever()
     except KeyboardInterrupt:

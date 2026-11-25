@@ -6,7 +6,7 @@ from .facial_analyzer import FacialAnalyzer
 from .scene_analyzer import SceneAnalyzer
 from .geocoder import Geocoder
 
-class GeoVisionPipeline:
+class SightTracePipeline:
     """
     Unified Forensics & Visual Geolocation Pipeline.
     Analyzes images (selfies, photos) and videos across all formats,

@@ -2,10 +2,10 @@ import os
 import sys
 import json
 import argparse
-from core import GeoVisionPipeline
+from core import SightTracePipeline
 
 def main():
-    parser = argparse.ArgumentParser(description="GeoVision AI — Visual Forensics & Geolocation Command Line Tool")
+    parser = argparse.ArgumentParser(description="SightTrace — Visual Forensics & Geolocation Command Line Tool")
     parser.add_argument("file", help="Path to evidence image or video file")
     parser.add_argument("--json", action="store_true", help="Output pure JSON format")
     parser.add_argument("--compare", help="Optional reference face image to match against", default=None)
@@ -16,7 +16,7 @@ def main():
         print(f"[!] File not found: {args.file}")
         sys.exit(1)
 
-    pipeline = GeoVisionPipeline()
+    pipeline = SightTracePipeline()
     report = pipeline.process(args.file)
 
     if args.compare and os.path.exists(args.compare):
@@ -33,7 +33,7 @@ def main():
         return
 
     print("=" * 60)
-    print(" 🛰️  GEOVISION AI FORENSICS REPORT")
+    print(" 🛰️  SIGHTTRACE FORENSICS REPORT")
     print("=" * 60)
     print(f" Target File       : {report['file_name']} ({report['file_type']})")
     print(f" Timestamp         : {report.get('timestamp') or 'None'}")
