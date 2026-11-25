@@ -1,4 +1,4 @@
-# 🛰️ GeoVision AI — Visual Forensics & Identity Mapping Suite
+# 🛰️ SightTrace — Visual Forensics & Identity Mapping Suite
 
 > **High-precision media forensics, facial biometric analysis, and geographic coordinate mapping (down to 10m precision) for image and video assets.**
 
@@ -6,7 +6,7 @@
 
 ## ⚡ Overview
 
-GeoVision AI is a Python-based visual forensics and identity intelligence platform. It analyzes images (selfies, full-frame photos, documents) and video streams across all major extensions (`.jpg`, `.png`, `.heic`, `.webp`, `.mp4`, `.mov`, `.mkv`, `.webm`) to extract minute hardware signatures, facial biometric embeddings, and geographic telemetry.
+SightTrace is a Python-based visual forensics and identity intelligence platform. It analyzes images (selfies, full-frame photos, documents) and video streams across all major extensions (`.jpg`, `.png`, `.heic`, `.webp`, `.mp4`, `.mov`, `.mkv`, `.webm`) to extract minute hardware signatures, facial biometric embeddings, and geographic telemetry.
 
 ---
 
@@ -41,9 +41,12 @@ GeoVision AI is a Python-based visual forensics and identity intelligence platfo
 
 ## 🚀 Quick Start
 
-### Prerequisites
-* Python 3.10+
-* Installed packages: `pip install -r requirements.txt`
+### Installation & Cloning
+```bash
+git clone https://github.com/akwesi324/sighttrace.git
+cd sighttrace
+pip install -r requirements.txt
+```
 
 ### 1. Launching the Web Dashboard
 ```bash
@@ -68,7 +71,7 @@ python cli.py path/to/evidence.jpg --compare path/to/reference_face.jpg
 ## 📂 Project Structure
 
 ```
-geovision-ai/
+sighttrace/
 ├── core/
 │   ├── __init__.py           # Unified pipeline runner
 │   ├── exif_extractor.py     # EXIF & hardware GPS parser (10m accuracy)
