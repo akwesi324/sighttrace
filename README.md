@@ -106,3 +106,9 @@ sighttrace/
 
 ## ⚖️ Legal & Privacy Notice
 This software is intended for authorized digital asset management, open-source intelligence (OSINT) research, consented identity verification, and media forensics. Users are responsible for complying with all applicable biometric privacy regulations (e.g., GDPR, BIPA, CCPA) and anti-surveillance laws in their jurisdiction.
+
+---
+
+<p align="center">
+  <strong>© MaskedOps. All Rights Reserved.</strong>
+</p>

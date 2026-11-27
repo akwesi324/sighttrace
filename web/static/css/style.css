@@ -1071,6 +1071,48 @@ body.vm-desktop {
   gap: 8px;
 }
 
+.status-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.copyright-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  letter-spacing: 0.8px;
+}
+
+/* ==========================================================================
+   VM Desktop Bottom Footer
+   ========================================================================== */
+.vm-desktop-footer {
+  height: 30px;
+  background-color: var(--bg-header);
+  border-top: 1px solid #1E273D;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.footer-center-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+}
+
+.footer-center-content span:first-of-type {
+  color: var(--accent-emerald);
+  letter-spacing: 0.5px;
+}
+
 .status-indicator-dot {
   width: 6px;
   height: 6px;
