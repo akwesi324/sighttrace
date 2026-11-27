@@ -3,129 +3,312 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SightTrace — Visual Forensics & Identity Mapping</title>
+  <title>SightTrace Forensic Suite [VM OS Environment]</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="/static/css/style.css">
   <!-- Leaflet CSS for maps -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
-<body>
-  <header class="app-header">
-    <div class="logo-cluster">
-      <i class="fa-solid fa-crosshairs logo-icon"></i>
-      <div>
-        <h1>SIGHTTRACE <span class="accent-text">AI</span></h1>
-        <p class="subtitle">VISUAL FORENSICS & IDENTITY GEOLOCATION ENGINE</p>
-      </div>
+<body class="vm-desktop">
+  <!-- VM OS Top Host Bar -->
+  <div class="os-topbar">
+    <div class="os-topbar-left">
+      <span class="os-menu-btn"><i class="fa-solid fa-terminal"></i> <strong>APPLICATIONS</strong></span>
+      <span class="os-badge-pill">SIGHTTRACE-OS v4.2 [x86_64-vm]</span>
+      <span class="os-text-dim">KERNEL: 6.8.0-kali-amd64</span>
     </div>
-    <div class="status-badge">
-      <span class="status-dot"></span> 10M GPS RESOLVER ACTIVE
+    <div class="os-topbar-center">
+      <span class="os-status-pulse"></span>
+      <span class="os-text-highlight">SECURE FORENSIC ENCLAVE [PID: 4092]</span>
     </div>
-  </header>
+    <div class="os-topbar-right">
+      <span class="os-telemetry-item"><i class="fa-solid fa-microchip"></i> CPU: 8%</span>
+      <span class="os-telemetry-item"><i class="fa-solid fa-memory"></i> RAM: 3.8 / 16.0 GB</span>
+      <span class="os-telemetry-item"><i class="fa-solid fa-network-wired"></i> EN0: ISOLATED</span>
+      <span id="os-clock" class="os-clock">00:00:00 UTC</span>
+    </div>
+  </div>
 
-  <main class="dashboard-container">
-    <!-- Left Column: Upload & Parameters -->
-    <section class="control-panel">
-      <div class="card upload-card">
-        <h2><i class="fa-solid fa-cloud-arrow-up"></i> MEDIA INGESTION</h2>
-        <p class="card-desc">Accepts all image/selfie & video extensions (.jpg, .png, .heic, .mp4, .mov, .mkv)</p>
-        
-        <div id="drop-zone" class="drop-zone">
-          <i class="fa-solid fa-satellite-dish drop-icon"></i>
-          <p>Drag & drop evidence media here</p>
-          <span>or click to browse filesystem</span>
-          <input type="file" id="file-input" accept="image/*,video/*" hidden>
+  <!-- VM Application Window -->
+  <div class="vm-window-container">
+    <div class="vm-window">
+      <!-- Window Title Bar -->
+      <div class="window-titlebar">
+        <div class="window-controls">
+          <span class="win-btn win-close" title="Close"></span>
+          <span class="win-btn win-minimize" title="Minimize"></span>
+          <span class="win-btn win-maximize" title="Maximize"></span>
         </div>
-
-        <div id="file-preview-bar" class="file-preview-bar hidden">
-          <span id="preview-filename">evidence_file.jpg</span>
-          <button id="analyze-btn" class="btn primary-btn"><i class="fa-solid fa-bolt"></i> RUN DEEP SCAN</button>
+        <div class="window-title">
+          <i class="fa-solid fa-crosshairs"></i> sighttrace-forensic-suite -- /dev/pts/1 (root@sighttrace-vm: /opt/sighttrace)
         </div>
-      </div>
-
-      <!-- Reference Gallery Verification -->
-      <div class="card reference-card">
-        <h2><i class="fa-solid fa-id-card-clip"></i> KNOWN IDENTITY VERIFICATION</h2>
-        <p class="card-desc">Optional consented reference selfie to match against target</p>
-        <div class="ref-input-group">
-          <input type="file" id="ref-file-input" accept="image/*" class="custom-file-input">
+        <div class="window-badges">
+          <span class="badge-tag tag-green"><i class="fa-solid fa-shield-halved"></i> OFFLINE ENCLAVE</span>
+          <span class="badge-tag tag-cyan"><i class="fa-solid fa-satellite"></i> 10M GPS RESOLVER</span>
         </div>
       </div>
 
-      <!-- Compliance Notice -->
-      <div class="card notice-card">
-        <h3><i class="fa-solid fa-shield-halved"></i> PRIVACY COMPLIANCE</h3>
-        <p>Telemetry parsing operates in zero-leakage local enclave mode. Biometric data is evaluated in-memory under strict opt-in consent standards.</p>
-      </div>
-    </section>
-
-    <!-- Right Column: Results & Mapping Telemetry -->
-    <section class="results-panel">
-      <!-- Loading State -->
-      <div id="loader" class="loader-overlay hidden">
-        <div class="spinner"></div>
-        <p>DECODING METADATA, BIOMETRICS & GEOGRAPHIC RADIUS...</p>
-      </div>
-
-      <!-- Default Placeholder -->
-      <div id="empty-state" class="empty-state">
-        <i class="fa-solid fa-radar empty-icon"></i>
-        <h3>AWAITING EVIDENCE INGESTION</h3>
-        <p>Upload a selfie, photo, or video clip to trace GPS coordinates, hardware signatures, and facial geometry.</p>
-      </div>
-
-      <!-- Active Report View -->
-      <div id="report-view" class="report-view hidden">
-        <!-- Top Telemetry Row -->
-        <div class="telemetry-grid">
-          <div class="tele-card">
-            <span class="tele-label">TARGET GEOLOCATION</span>
-            <h3 id="res-geo-status" class="tele-val text-green">RESOLVED (±8.5m)</h3>
-            <p id="res-address" class="tele-sub">Retrieving physical address...</p>
-          </div>
-          <div class="tele-card">
-            <span class="tele-label">FACES DETECTED</span>
-            <h3 id="res-faces-count" class="tele-val text-cyan">1 Subject</h3>
-            <p id="res-face-sharpness" class="tele-sub">Sharpness Index: 84.2</p>
-          </div>
-          <div class="tele-card">
-            <span class="tele-label">ORIGIN HARDWARE</span>
-            <h3 id="res-device" class="tele-val">Apple iPhone 15 Pro</h3>
-            <p id="res-timestamp" class="tele-sub">2026-08-14 18:22:10 UTC</p>
-          </div>
+      <!-- Window File Menu Bar -->
+      <div class="window-menubar">
+        <span class="menu-item">File</span>
+        <span class="menu-item">Evidence Ingestion</span>
+        <span class="menu-item">Neural Models</span>
+        <span class="menu-item">Biometrics</span>
+        <span class="menu-item">Telemetry</span>
+        <span class="menu-item">Forensic Vault</span>
+        <span class="menu-item">Help</span>
+        <div class="menubar-right">
+          <span class="mode-indicator"><i class="fa-solid fa-circle-dot text-emerald"></i> SYSTEM LIVE (TORCH-ENABLED)</span>
         </div>
+      </div>
 
-        <!-- Interactive Map Container -->
-        <div class="card map-card">
-          <div class="map-header">
-            <h3><i class="fa-solid fa-map-location-dot"></i> HIGH-PRECISION 10M RADAR PERIMETER</h3>
-            <span id="coords-display" class="coords-pill">0.000000° N, 0.000000° E</span>
-          </div>
-          <div id="map-container" class="map-viewport"></div>
-        </div>
+      <!-- Main Application Body -->
+      <div class="app-workstation">
+        <!-- Left Sidebar: Ingestion & Reference Input -->
+        <aside class="sidebar-panel">
+          <div class="os-panel-card">
+            <div class="panel-header">
+              <h3><i class="fa-solid fa-file-shield"></i> EVIDENCE INGESTION</h3>
+              <span class="panel-tag">RAW INPUT</span>
+            </div>
+            <p class="panel-sub">Accepts all image formats (.jpg, .png, .heic, .webp) & video (.mp4, .mov, .mkv, .avi)</p>
 
-        <!-- Detailed Forensics Dual-Grid -->
-        <div class="details-grid">
-          <!-- Biometric Face Vector Details -->
-          <div class="card">
-            <h3><i class="fa-solid fa-fingerprint"></i> BIOMETRIC FACIAL SIGNATURE</h3>
-            <div id="face-details-list" class="details-list">
-              <!-- Populated via JS -->
+            <div id="drop-zone" class="drop-zone">
+              <i class="fa-solid fa-satellite-dish drop-icon"></i>
+              <p>Drag & drop evidence media</p>
+              <span>or click to browse local filesystem</span>
+              <input type="file" id="file-input" accept="image/*,video/*" hidden>
+            </div>
+
+            <div id="file-preview-bar" class="file-preview-bar hidden">
+              <div class="file-name-wrap">
+                <i class="fa-solid fa-file-waveform text-cyan"></i>
+                <span id="preview-filename">evidence_file.jpg</span>
+              </div>
+              <button id="analyze-btn" class="btn primary-btn"><i class="fa-solid fa-bolt"></i> RUN SCAN</button>
             </div>
           </div>
 
-          <!-- Scene & Environmental Forensics -->
-          <div class="card">
-            <h3><i class="fa-solid fa-circle-nodes"></i> MINUTE SCENE FORENSICS</h3>
-            <div id="scene-details-list" class="details-list">
-              <!-- Populated via JS -->
+          <!-- Reference Identity Matching -->
+          <div class="os-panel-card">
+            <div class="panel-header">
+              <h3><i class="fa-solid fa-id-card-clip"></i> REFERENCE TARGET (OPTIONAL)</h3>
+            </div>
+            <p class="panel-sub">Consented identity photo to compare against extracted visual biometrics</p>
+            <div class="ref-input-group">
+              <input type="file" id="ref-file-input" accept="image/*" class="custom-file-input">
             </div>
           </div>
+
+          <!-- Forensic Security Status -->
+          <div class="os-panel-card secure-notice-card">
+            <div class="panel-header">
+              <h3><i class="fa-solid fa-lock"></i> PRIVACY COMPLIANCE</h3>
+            </div>
+            <p class="panel-sub">Zero cloud leakage. All PyTorch neural inference, EXIF parsing, and biometric tensors compute in-memory within this virtual machine.</p>
+          </div>
+        </aside>
+
+        <!-- Right Main Viewport: Multi-Tab Forensic Suite -->
+        <main class="viewport-panel">
+          <!-- Workstation Tabs -->
+          <div class="workstation-tabs">
+            <button class="tab-btn active" data-tab="tab-radar">
+              <i class="fa-solid fa-satellite"></i> 1. RADAR & 10M GEO-PERIMETER
+            </button>
+            <button class="tab-btn" data-tab="tab-deep">
+              <i class="fa-solid fa-brain"></i> 2. DEEP LEARNING TENSOR & DOMAIN
+            </button>
+            <button class="tab-btn" data-tab="tab-biometric">
+              <i class="fa-solid fa-fingerprint"></i> 3. BIOMETRICS & FACIAL VECTORS
+            </button>
+            <button class="tab-btn" data-tab="tab-terminal">
+              <i class="fa-solid fa-terminal"></i> 4. VM FORENSIC TERMINAL
+            </button>
+          </div>
+
+          <!-- Loading Overlay -->
+          <div id="loader" class="loader-overlay hidden">
+            <div class="spinner"></div>
+            <p class="loader-text">RUNNING PYTORCH DEEP INFERENCE, EXIF EXTRACTION & 10M GPS RESOLUTION...</p>
+          </div>
+
+          <!-- Empty State -->
+          <div id="empty-state" class="empty-state">
+            <i class="fa-solid fa-crosshairs empty-icon"></i>
+            <h3>AWAITING EVIDENCE INGESTION</h3>
+            <p>Select or drag an evidence image (photo/selfie) or video into the ingestion panel to activate GPS mapping, deep domain classification, and biometric isolation.</p>
+            <div class="quick-terminal-hint">
+              <code>root@sighttrace-vm:~# ./sighttrace-cli --help</code>
+            </div>
+          </div>
+
+          <!-- Active Investigation Container -->
+          <div id="report-view" class="report-view hidden">
+            <!-- Telemetry Metrics Summary Bar -->
+            <div class="summary-metric-bar">
+              <div class="metric-item">
+                <span class="metric-lbl">TARGET GEOLOCATION</span>
+                <span id="res-geo-status" class="metric-val text-emerald">RESOLVED (±10m)</span>
+                <span id="res-address" class="metric-sub">Decoding physical coordinate...</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-lbl">DEEP DOMAIN PREDICTION</span>
+                <span id="res-domain-status" class="metric-val text-cyan">INDOOR / ENCLOSURE (91.4%)</span>
+                <span id="res-model-device" class="metric-sub">MobileNetV3 (CPU FP32)</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-lbl">BIOMETRIC FACES</span>
+                <span id="res-faces-count" class="metric-val text-amber">1 Subject Isolated</span>
+                <span id="res-face-sharpness" class="metric-sub">Sharpness: 84.2</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-lbl">HARDWARE EXIF SIGNATURE</span>
+                <span id="res-device" class="metric-val">Apple iPhone 15 Pro</span>
+                <span id="res-timestamp" class="metric-sub">2026-08-14 18:22:10 UTC</span>
+              </div>
+            </div>
+
+            <!-- TAB 1: SATELLITE RADAR & 10M GEO-PERIMETER -->
+            <div id="tab-radar" class="tab-content active">
+              <div class="os-window-card">
+                <div class="card-title-bar">
+                  <h4><i class="fa-solid fa-map-location-dot"></i> HIGH-PRECISION 10M SATELLITE RADAR PERIMETER</h4>
+                  <div class="coords-box">
+                    <span id="coords-display" class="coords-pill">0.000000° N, 0.000000° E</span>
+                    <span class="accuracy-pill"><i class="fa-solid fa-circle-dot"></i> RADIUS: ±10.0m</span>
+                  </div>
+                </div>
+                <div id="map-container" class="map-viewport"></div>
+              </div>
+            </div>
+
+            <!-- TAB 2: DEEP LEARNING TENSOR & DOMAIN CLASSIFIER -->
+            <div id="tab-deep" class="tab-content">
+              <div class="deep-grid">
+                <!-- Latent Tensor Representation -->
+                <div class="os-window-card">
+                  <div class="card-title-bar">
+                    <h4><i class="fa-solid fa-microchip"></i> 576-DIMENSIONAL DEEP LATENT REPRESENTATION</h4>
+                    <span id="tensor-energy-pill" class="badge-pill">ENERGY: 1.000</span>
+                  </div>
+                  <p class="card-info-text">
+                    Extracted from penultimate LayerNorm & GELU projection head. Values are L2-normalized across unit hypersphere.
+                  </p>
+                  <div class="tensor-spectrum-container">
+                    <div id="tensor-spectrum" class="tensor-spectrum"></div>
+                  </div>
+                  <div class="tensor-stats-row">
+                    <div class="t-stat">
+                      <span class="t-stat-k">Architecture</span>
+                      <span id="res-arch-name" class="t-stat-v">MobileNetV3-DeepForensics</span>
+                    </div>
+                    <div class="t-stat">
+                      <span class="t-stat-k">Inference Device</span>
+                      <span id="res-device-name" class="t-stat-v">CPU</span>
+                    </div>
+                    <div class="t-stat">
+                      <span class="t-stat-k">Latent Dimensions</span>
+                      <span class="t-stat-v">576 (FP32)</span>
+                    </div>
+                    <div class="t-stat">
+                      <span class="t-stat-k">Sparsity Ratio</span>
+                      <span id="res-sparsity-val" class="t-stat-v">0.00%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 6-Class Environmental Domain Probabilities -->
+                <div class="os-window-card">
+                  <div class="card-title-bar">
+                    <h4><i class="fa-solid fa-chart-simple"></i> ENVIRONMENTAL DOMAIN PROBABILITY DISTRIBUTION</h4>
+                    <span id="domain-top-pill" class="badge-pill bg-cyan">PREDICTION</span>
+                  </div>
+                  <div id="domain-prob-list" class="domain-bars-container">
+                    <!-- Populated dynamically via JS -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 3: BIOMETRIC TOPOLOGY & FACIAL SIGNATURE -->
+            <div id="tab-biometric" class="tab-content">
+              <div class="dual-forensics-grid">
+                <!-- Face Vector Details -->
+                <div class="os-window-card">
+                  <div class="card-title-bar">
+                    <h4><i class="fa-solid fa-user-astronaut"></i> BIOMETRIC TOPOLOGY & EYE LANDMARKS</h4>
+                  </div>
+                  <div id="face-details-list" class="details-list"></div>
+                </div>
+
+                <!-- Reference Match Results (if provided) -->
+                <div class="os-window-card">
+                  <div class="card-title-bar">
+                    <h4><i class="fa-solid fa-fingerprint"></i> KNOWN IDENTITY MATCH ASSESSMENT</h4>
+                  </div>
+                  <div id="identity-match-view" class="details-list">
+                    <div class="detail-row">
+                      <span class="detail-k">Identity Match Mode</span>
+                      <span class="detail-v text-muted">Awaiting optional reference selfie</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Minute Scene Forensics -->
+                <div class="os-window-card full-span-card">
+                  <div class="card-title-bar">
+                    <h4><i class="fa-solid fa-circle-nodes"></i> MINUTE SCENE & SENSOR FORENSICS</h4>
+                  </div>
+                  <div id="scene-details-list" class="details-list"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 4: VM KERNEL FORENSIC TERMINAL -->
+            <div id="tab-terminal" class="tab-content">
+              <div class="os-terminal-card">
+                <div class="terminal-bar">
+                  <span class="term-dot dot-red"></span>
+                  <span class="term-dot dot-yellow"></span>
+                  <span class="term-dot dot-green"></span>
+                  <span class="term-title">tty1: sighttrace-core-dmesg (live journalctl stream)</span>
+                </div>
+                <div id="terminal-console" class="terminal-body">
+                  <div class="terminal-line"><span class="term-prefix">[  0.000000]</span> Linux version 6.8.0-kali-amd64 (forensic-build@vm) (gcc 13.2.0)</div>
+                  <div class="terminal-line"><span class="term-prefix">[  0.041092]</span> SIGHTTRACE: Initializing hardware security enclave on /dev/pts/1</div>
+                  <div class="terminal-line"><span class="term-prefix">[  0.108214]</span> SIGHTTRACE: PyTorch 2.11.0 Engine loaded on CPU executor</div>
+                  <div class="terminal-line"><span class="term-prefix">[  0.150033]</span> SIGHTTRACE: MobileNetV3 576-d Latent Projection weights loaded</div>
+                  <div class="terminal-line"><span class="term-prefix">[  0.219800]</span> SIGHTTRACE: 10m Geodesic GPS perimeter calculator active</div>
+                  <div class="terminal-line term-prompt"><span class="term-user">root@sighttrace-vm</span>:<span class="term-path">/opt/sighttrace</span># <span class="term-cursor">█</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+
+      <!-- Window Status Bar -->
+      <div class="window-statusbar">
+        <div class="status-left">
+          <span class="status-indicator-dot"></span>
+          <span>READY</span>
+          <span class="status-sep">|</span>
+          <span>TOOLKIT: SightTrace v4.2.0</span>
+          <span class="status-sep">|</span>
+          <span id="active-file-indicator">NO EVIDENCE LOADED</span>
+        </div>
+        <div class="status-right">
+          <span>LATENT PROJECTION: 576-D</span>
+          <span class="status-sep">|</span>
+          <span>GEODESIC RADIUS: ±10.0M</span>
+          <span class="status-sep">|</span>
+          <span>SANDBOX: ACTIVE</span>
         </div>
       </div>
-    </section>
-  </main>
+    </div>
+  </div>
 
   <script src="/static/js/app.js"></script>
 </body>
