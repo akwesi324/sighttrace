@@ -5,12 +5,14 @@ from .video_parser import VideoParser
 from .facial_analyzer import FacialAnalyzer
 from .scene_analyzer import SceneAnalyzer
 from .geocoder import Geocoder
+from .deep_engine import DeepEngine
 
 class SightTracePipeline:
     """
-    Unified Forensics & Visual Geolocation Pipeline.
+    Unified Forensics, Deep Learning & Visual Geolocation Pipeline.
     Analyzes images (selfies, photos) and videos across all formats,
     extracts minute EXIF, sensor, and facial biometric signals,
+    runs deep convolutional neural network forward passes,
     and maps physical coordinates with pinpoint accuracy (down to 10m).
     """
 
@@ -23,6 +25,7 @@ class SightTracePipeline:
         self.facial = FacialAnalyzer()
         self.scene = SceneAnalyzer()
         self.geocoder = Geocoder()
+        self.deep = DeepEngine()
 
     def process(self, file_path: str) -> Dict[str, Any]:
         if not os.path.exists(file_path):
@@ -47,6 +50,7 @@ class SightTracePipeline:
                 "faces_detected": 0,
                 "faces": []
             },
+            "deep_learning": {},
             "scene_forensics": {},
             "device_telemetry": {},
             "timestamp": None
@@ -100,7 +104,11 @@ class SightTracePipeline:
             "faces": face_res.get("faces", [])
         }
 
-        # 3. Scene Forensics
+        # 3. Deep Learning Latent Tensor & Neural Domain Prediction
+        deep_res = self.deep.extract_deep_features(analysis_image)
+        report["deep_learning"] = deep_res
+
+        # 4. Scene Forensics
         scene_res = self.scene.analyze(analysis_image)
         report["scene_forensics"] = {
             "perceptual_hash": scene_res.get("perceptual_hash"),
