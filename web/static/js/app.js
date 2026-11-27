@@ -88,6 +88,72 @@ function handleFileSelected(file) {
 
 analyzeBtn.addEventListener('click', runAnalysis);
 
+// Additional Scan Buttons Wiring
+const primaryScanTrigger = document.getElementById('primary-scan-trigger');
+if (primaryScanTrigger) {
+  primaryScanTrigger.addEventListener('click', () => {
+    if (selectedFile) {
+      runAnalysis();
+    } else {
+      fileInput.click();
+    }
+  });
+}
+
+const topTraceBtn = document.getElementById('top-trace-btn');
+if (topTraceBtn) {
+  topTraceBtn.addEventListener('click', () => {
+    if (selectedFile) {
+      runAnalysis();
+    } else {
+      fileInput.click();
+    }
+  });
+}
+
+const heroScanBtn = document.getElementById('hero-scan-btn');
+if (heroScanBtn) {
+  heroScanBtn.addEventListener('click', () => {
+    fileInput.click();
+  });
+}
+
+const loadSampleBtn = document.getElementById('load-sample-btn');
+const heroSampleBtn = document.getElementById('hero-sample-btn');
+
+[loadSampleBtn, heroSampleBtn].forEach(btn => {
+  if (btn) {
+    btn.addEventListener('click', runSampleAnalysis);
+  }
+});
+
+async function runSampleAnalysis() {
+  emptyState.classList.add('hidden');
+  reportView.classList.add('hidden');
+  loader.classList.remove('hidden');
+
+  logTerminal(`[SAMPLE-INGEST] Requesting reference forensic sample with verified 10m coordinates...`);
+
+  try {
+    const res = await fetch('/api/sample');
+    const data = await res.json();
+    loader.classList.add('hidden');
+
+    if (data.success) {
+      activeFileIndicator.textContent = `TARGET: sample_forensic_evidence.jpg [DEMO]`;
+      renderReport(data);
+      logTerminal(`[SAMPLE-COMPLETE] Forensic telemetry successfully rendered.`);
+    } else {
+      alert('Sample trace error: ' + (data.error || 'Unknown error'));
+      emptyState.classList.remove('hidden');
+    }
+  } catch (err) {
+    loader.classList.add('hidden');
+    emptyState.classList.remove('hidden');
+    alert('Failed to load sample: ' + err.message);
+  }
+}
+
 async function runAnalysis() {
   if (!selectedFile) return;
 

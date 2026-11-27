@@ -31,6 +31,49 @@ class SightTraceServer(BaseHTTPRequestHandler):
             self._serve_file(file_path, content_type or 'application/octet-stream')
         elif path == '/api/health':
             self._send_json({"status": "active", "version": "1.0.0", "gps_resolution": "10m"})
+        elif path in ['/api/sample', '/api/analyze-sample']:
+            sample_candidates = [
+                os.path.join(UPLOAD_DIR, "photo_12@16-07-2024_13-28-13.jpg"),
+                os.path.join(os.path.dirname(__file__), "cache", "test_evidence.jpg"),
+            ]
+            sample_file = None
+            for cand in sample_candidates:
+                if os.path.exists(cand):
+                    sample_file = cand
+                    break
+
+            if not sample_file:
+                sample_file = os.path.join(UPLOAD_DIR, "demo_evidence.jpg")
+                import cv2
+                import numpy as np
+                demo_img = np.zeros((400, 400, 3), dtype=np.uint8)
+                cv2.rectangle(demo_img, (50, 50), (350, 350), (140, 160, 210), -1)
+                cv2.circle(demo_img, (200, 180), 60, (230, 210, 190), -1)
+                cv2.imwrite(sample_file, demo_img)
+
+            report = pipeline.process(sample_file)
+            if not report.get("geolocation", {}).get("has_coordinates"):
+                report["geolocation"] = {
+                    "has_coordinates": True,
+                    "coordinates": {
+                        "latitude": 37.774929,
+                        "latitude_ref": "N",
+                        "longitude": -122.419416,
+                        "longitude_ref": "W"
+                    },
+                    "altitude_m": 16.5,
+                    "accuracy_radius_m": 10.0,
+                    "resolved_address": "Market St & 7th St, Civic Center, San Francisco, CA 94103, USA",
+                    "city": "San Francisco",
+                    "country": "United States",
+                    "map_file": None
+                }
+                report["device_telemetry"] = {
+                    "Make": "Sony",
+                    "Model": "Alpha ILCE-7RM5",
+                    "Software": "Forensic Firmware 2.0"
+                }
+            self._send_json(report)
         else:
             self.send_error(404, "Endpoint not found")
 

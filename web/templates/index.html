@@ -59,6 +59,7 @@
         <span class="menu-item">Forensic Vault</span>
         <span class="menu-item">Help</span>
         <div class="menubar-right">
+          <button id="top-trace-btn" class="top-scan-action-btn"><i class="fa-solid fa-radar"></i> START FORENSIC TRACE</button>
           <span class="mode-indicator"><i class="fa-solid fa-circle-dot text-emerald"></i> SYSTEM LIVE (TORCH-ENABLED)</span>
         </div>
       </div>
@@ -87,6 +88,42 @@
                 <span id="preview-filename">evidence_file.jpg</span>
               </div>
               <button id="analyze-btn" class="btn primary-btn"><i class="fa-solid fa-bolt"></i> RUN SCAN</button>
+            </div>
+
+            <!-- Dedicated Scan / Trace Buttons -->
+            <div class="scan-action-cluster">
+              <button id="primary-scan-trigger" class="btn btn-scan-primary">
+                <i class="fa-solid fa-radar"></i> START FORENSIC TRACE
+              </button>
+              <button id="load-sample-btn" class="btn btn-scan-sample">
+                <i class="fa-solid fa-flask"></i> QUICK DEMO EVIDENCE TRACE
+              </button>
+            </div>
+          </div>
+
+          <!-- Trace Pipeline Options -->
+          <div class="os-panel-card">
+            <div class="panel-header">
+              <h3><i class="fa-solid fa-sliders"></i> TRACE OPTIONS</h3>
+              <span class="panel-tag">PARAMETERS</span>
+            </div>
+            <div class="trace-options-list">
+              <label class="trace-option-item">
+                <input type="checkbox" id="opt-deep" checked>
+                <span>Deep Neural Inference (MobileNetV3)</span>
+              </label>
+              <label class="trace-option-item">
+                <input type="checkbox" id="opt-gps" checked>
+                <span>Sub-10m GPS Geodesic Perimeter</span>
+              </label>
+              <label class="trace-option-item">
+                <input type="checkbox" id="opt-face" checked>
+                <span>Biometric Facial Topology & Eye Tracking</span>
+              </label>
+              <label class="trace-option-item">
+                <input type="checkbox" id="opt-scene" checked>
+                <span>Perceptual dHash & Scene Forensics</span>
+              </label>
             </div>
           </div>
 
@@ -139,6 +176,14 @@
             <i class="fa-solid fa-crosshairs empty-icon"></i>
             <h3>AWAITING EVIDENCE INGESTION</h3>
             <p>Select or drag an evidence image (photo/selfie) or video into the ingestion panel to activate GPS mapping, deep domain classification, and biometric isolation.</p>
+            <div class="empty-action-buttons">
+              <button id="hero-scan-btn" class="btn btn-hero-scan">
+                <i class="fa-solid fa-crosshairs"></i> BROWSE EVIDENCE & START TRACE
+              </button>
+              <button id="hero-sample-btn" class="btn btn-hero-sample">
+                <i class="fa-solid fa-flask"></i> RUN DEMO EVIDENCE TRACE
+              </button>
+            </div>
             <div class="quick-terminal-hint">
               <code>root@sighttrace-vm:~# ./sighttrace-cli --help</code>
             </div>
